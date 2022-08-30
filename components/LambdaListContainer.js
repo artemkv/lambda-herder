@@ -6,6 +6,7 @@ import Spinner from './Spinner';
 import {useSelector} from 'react-redux';
 import EmptyState from './EmptyState';
 import {getConnection} from '../persistence';
+import {jj} from '../util';
 
 const LambdaListContainer = ({navigation}) => {
   const DATA_NOT_LOADED = 0;
@@ -37,6 +38,7 @@ const LambdaListContainer = ({navigation}) => {
           conn.secretAccessKey,
         );
       }
+      jj(metricData);
       setData(metricData);
       setDataLoadingStatus(DATA_LOADED);
     } catch (err) {

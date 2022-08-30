@@ -11,11 +11,16 @@ import {
   GetMetricDataCommand,
 } from '@aws-sdk/client-cloudwatch';
 import {from, pair} from 'datashaper-js';
+import {listLambdasDemo, getMetricDataDemo, getLogsDemo} from './awsdemodata';
 import {jj} from './util';
 
 const byDate = (a, b) => new Date(a).getTime() - new Date(b).getTime();
 const byDateDescending = (a, b) =>
   new Date(b).getTime() - new Date(a).getTime();
+
+const isDemo = (accessKeyId, secretAccessKey) => {
+  return !accessKeyId || !secretAccessKey;
+};
 
 // Different metrics:
 // https://docs.aws.amazon.com/lambda/latest/dg/monitoring-metrics.html
@@ -29,6 +34,10 @@ const byDateDescending = (a, b) =>
 // TODO: sorting
 // TODO: paging
 export const listLambdas = async (region, accessKeyId, secretAccessKey) => {
+  if (isDemo(accessKeyId, secretAccessKey)) {
+    return listLambdasDemo();
+  }
+
   const client = new LambdaClient({
     region,
     credentials: {
@@ -52,6 +61,10 @@ export const getMetricData = async (
   accessKeyId,
   secretAccessKey,
 ) => {
+  if (isDemo(accessKeyId, secretAccessKey)) {
+    return getMetricDataDemo();
+  }
+
   const client = new CloudWatchClient({
     region,
     credentials: {
@@ -81,7 +94,6 @@ export const getMetricData = async (
   });
 
   const data = await client.send(command);
-
   const metrics = from(data.MetricDataResults)
     .toMap(
       x => x.Id,
@@ -122,6 +134,10 @@ export const getLogs = async (
   accessKeyId,
   secretAccessKey,
 ) => {
+  if (isDemo(accessKeyId, secretAccessKey)) {
+    return getLogsDemo();
+  }
+
   const client = new CloudWatchLogsClient({
     region: region,
     credentials: {

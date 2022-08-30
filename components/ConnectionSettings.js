@@ -55,6 +55,10 @@ const ConnectionSettings = props => {
           We recommend using a dedicated account with AWSLambda_ReadOnlyAccess
           permissions.
         </Text>
+        <Text style={styles.hint}>
+          If you leave one of these fields empty, if will see the randomly
+          generated demo data.
+        </Text>
       </View>
       <View style={styles.buttonContainer}>
         <Button
@@ -90,7 +94,8 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
   },
   hint: {
-    margin: 32,
+    marginHorizontal: 32,
+    marginVertical: 16,
   },
   buttonContainer: {
     margin: 16,
