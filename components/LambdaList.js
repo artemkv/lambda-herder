@@ -7,6 +7,7 @@ import {
   StatusBar,
 } from 'react-native';
 import Lambda from './Lambda';
+import ErrorRatePieChart from './ErrorRatePieChart';
 
 const LambdaList = ({lambdas, navigation, refreshing, onRefresh}) => {
   return (
@@ -19,6 +20,9 @@ const LambdaList = ({lambdas, navigation, refreshing, onRefresh}) => {
         refreshControl={
           <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
         }
+        ListHeaderComponent={() => {
+          return <ErrorRatePieChart data={lambdas} />;
+        }}
       />
     </View>
   );
