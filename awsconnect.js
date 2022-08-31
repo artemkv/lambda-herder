@@ -51,7 +51,7 @@ export const listLambdas = async (region, accessKeyId, secretAccessKey) => {
   const data = await client.send(command);
 
   // Only second page is supported, arriving at 100 lambdas max
-  let data2 = [];
+  let data2 = {Functions: []};
   if (data.NextMarker) {
     const command2 = new ListFunctionsCommand({
       Marker: data.NextMarker,
@@ -142,6 +142,8 @@ const prependZeroes = (aa, n) => {
   return [...Array(n - aa.length).fill(0), ...aa];
 };
 
+const MAX_LOG_MESSAGES_SHOWN = 50;
+
 export const getLogs = async (
   region,
   lambdaName,
@@ -164,20 +166,26 @@ export const getLogs = async (
 
   let allMessages = [];
   const logStreamNames = await getLatestLogStreamNames(client, logGroupName);
-  // TODO: stop after certain amount of events
+
   for (let i = 0; i < logStreamNames.length; i++) {
     const logStreamName = logStreamNames[i];
 
-    // TODO:  check if can specify the limit here
     const command = new GetLogEventsCommand({
       logGroupName,
       logStreamName,
+      limit: MAX_LOG_MESSAGES_SHOWN,
     });
 
     const data = await client.send(command);
-    // TODO: could limit here as well
-    const messages = data.events.map(x => x.message);
+    const messages = from(data.events)
+      .map(x => x.message)
+      .take(MAX_LOG_MESSAGES_SHOWN - allMessages.length)
+      .return();
     allMessages = [...allMessages, ...messages];
+
+    if (allMessages.length >= MAX_LOG_MESSAGES_SHOWN) {
+      return allMessages;
+    }
   }
 
   return allMessages;
@@ -186,7 +194,6 @@ export const getLogs = async (
 const getLatestLogStreamNames = async (client, logGroupName) => {
   const describeLogStreams = new DescribeLogStreamsCommand({
     logGroupName,
-    limit: 10,
     orderBy: 'LastEventTime',
     descending: true,
   });
