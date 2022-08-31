@@ -38,7 +38,6 @@ const LambdaListContainer = ({navigation}) => {
           conn.secretAccessKey,
         );
       }
-      jj(metricData);
       setData(metricData);
       setDataLoadingStatus(DATA_LOADED);
     } catch (err) {

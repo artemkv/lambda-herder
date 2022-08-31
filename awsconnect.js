@@ -17,6 +17,7 @@ import {jj} from './util';
 const byDate = (a, b) => new Date(a).getTime() - new Date(b).getTime();
 const byDateDescending = (a, b) =>
   new Date(b).getTime() - new Date(a).getTime();
+const byName = (a, b) => a.localeCompare(b);
 
 const isDemo = (accessKeyId, secretAccessKey) => {
   return !accessKeyId || !secretAccessKey;
@@ -32,7 +33,6 @@ const isDemo = (accessKeyId, secretAccessKey) => {
 // - ConcurrentExecutions
 
 // TODO: sorting
-// TODO: paging
 export const listLambdas = async (region, accessKeyId, secretAccessKey) => {
   if (isDemo(accessKeyId, secretAccessKey)) {
     return listLambdasDemo();
@@ -49,10 +49,24 @@ export const listLambdas = async (region, accessKeyId, secretAccessKey) => {
   // https://docs.aws.amazon.com/AWSJavaScriptSDK/v3/latest/clients/client-lambda/interfaces/listfunctionscommandinput.html
   const command = new ListFunctionsCommand({});
   const data = await client.send(command);
-  return from(data.Functions)
-    .sorted((a, b) => byDateDescending(a.LastModified, b.LastModified))
-    .map(f => f.FunctionName)
-    .return();
+
+  // Only second page is supported, arriving at 100 lambdas max
+  let data2 = [];
+  if (data.NextMarker) {
+    const command2 = new ListFunctionsCommand({
+      Marker: data.NextMarker,
+    });
+    data2 = await client.send(command2);
+  }
+
+  return (
+    from(data.Functions)
+      .concat(data2.Functions)
+      //.sorted((a, b) => byDateDescending(a.LastModified, b.LastModified))
+      .sorted((a, b) => byName(a.FunctionName, b.FunctionName))
+      .map(f => f.FunctionName)
+      .return()
+  );
 };
 
 export const getMetricData = async (

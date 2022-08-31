@@ -3366,10 +3366,10 @@ data-urls@^2.0.0:
     whatwg-mimetype "^2.3.0"
     whatwg-url "^8.0.0"
 
-datashaper-js@^1.0.5:
-  version "1.0.5"
-  resolved "https://registry.npmjs.org/datashaper-js/-/datashaper-js-1.0.5.tgz"
-  integrity sha512-zUTIhFZI8BExjTsgwFYHvfxpETJR8nYFgi36rqdQTW4VN4kdE0ADrQVe8Yz/d4NjxY4q1dKLj4koPm+jzdLYTw==
+datashaper-js@^1.0.7:
+  version "1.0.7"
+  resolved "https://registry.yarnpkg.com/datashaper-js/-/datashaper-js-1.0.7.tgz#75b4ebe8f0b85d87cc559b7f8b9d662f87e4bf09"
+  integrity sha512-GLelIhu/VMZGL0gfmJRyg99P/+BG3Xh7UdS541LKoMcQ1babj/qhqrUJm5KWjhdh9clNdDGCS6hfNsJphjsrvQ==
 
 dayjs@^1.8.15:
   version "1.11.4"

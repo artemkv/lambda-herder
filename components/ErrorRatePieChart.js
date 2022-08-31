@@ -35,8 +35,8 @@ const ErrorRatePieChart = props => {
       <VictoryPie
         colorScale={['#e92967', '#12a66d']}
         data={data}
-        height={200}
-        innerRadius={65}
+        height={220}
+        innerRadius={45}
       />
     </View>
   );
