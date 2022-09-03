@@ -12,7 +12,7 @@ import {
 } from '@aws-sdk/client-cloudwatch';
 import {from, pair} from 'datashaper-js';
 import {listLambdasDemo, getMetricDataDemo, getLogsDemo} from './awsdemodata';
-import {jj} from './util';
+import {ORDER_BY_NAME, ORDER_BY_DATE} from './state/constants';
 
 const byDate = (a, b) => new Date(a).getTime() - new Date(b).getTime();
 const byDateDescending = (a, b) =>
@@ -32,8 +32,12 @@ const isDemo = (accessKeyId, secretAccessKey) => {
 // - Duration
 // - ConcurrentExecutions
 
-// TODO: sorting
-export const listLambdas = async (region, accessKeyId, secretAccessKey) => {
+export const listLambdas = async (
+  region,
+  accessKeyId,
+  secretAccessKey,
+  order,
+) => {
   if (isDemo(accessKeyId, secretAccessKey)) {
     return listLambdasDemo();
   }
@@ -45,8 +49,6 @@ export const listLambdas = async (region, accessKeyId, secretAccessKey) => {
       secretAccessKey,
     },
   });
-  // max 50 items, paginate for more
-  // https://docs.aws.amazon.com/AWSJavaScriptSDK/v3/latest/clients/client-lambda/interfaces/listfunctionscommandinput.html
   const command = new ListFunctionsCommand({});
   const data = await client.send(command);
 
@@ -59,14 +61,15 @@ export const listLambdas = async (region, accessKeyId, secretAccessKey) => {
     data2 = await client.send(command2);
   }
 
-  return (
-    from(data.Functions)
-      .concat(data2.Functions)
-      //.sorted((a, b) => byDateDescending(a.LastModified, b.LastModified))
-      .sorted((a, b) => byName(a.FunctionName, b.FunctionName))
-      .map(f => f.FunctionName)
-      .return()
-  );
+  let pipe = from(data.Functions).concat(data2.Functions);
+  if (order === ORDER_BY_NAME) {
+    pipe = pipe.sorted((a, b) => byName(a.FunctionName, b.FunctionName));
+  } else if (order === ORDER_BY_DATE) {
+    pipe = pipe.sorted((a, b) =>
+      byDateDescending(a.LastModified, b.LastModified),
+    );
+  }
+  return pipe.map(f => f.FunctionName).return();
 };
 
 export const getMetricData = async (

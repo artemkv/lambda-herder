@@ -15,6 +15,11 @@ export const updateFilterRegion = region => ({
   payload: {region},
 });
 
+export const updateFilterOrder = order => ({
+  type: actionTypes.UPDATE_FILTER_ORDER,
+  payload: {order},
+});
+
 export const flowReInit = _ => ({
   type: actionTypes.FLOW_REINIT,
   payload: {},

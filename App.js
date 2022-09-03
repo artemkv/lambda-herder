@@ -23,7 +23,6 @@ import {
   flowNeedConnection,
   flowAllGood,
 } from './state/actions';
-import {jj} from './util';
 
 function wait(ms) {
   return new Promise(resolve => setTimeout(resolve, ms));

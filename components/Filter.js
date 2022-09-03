@@ -2,11 +2,19 @@ import React from 'react';
 import {StyleSheet, View, Text, StatusBar, SafeAreaView} from 'react-native';
 import SelectDropdown from 'react-native-select-dropdown';
 import {useSelector, useDispatch} from 'react-redux';
-import {updateFilterRegion} from '../state/actions';
+import {updateFilterRegion, updateFilterOrder} from '../state/actions';
+import {ORDER_BY_NAME, ORDER_BY_DATE} from '../state/constants';
+
+const orderOptions = [
+  {name: 'by function name', order: ORDER_BY_NAME},
+  {name: 'most recently updated first', order: ORDER_BY_DATE},
+];
 
 const Filter = ({navigator, route}) => {
   const region = useSelector(state => state.filter.region);
   const regions = useSelector(state => state.filter.regions);
+  const order = useSelector(state => state.filter.order);
+  const selectedOrder = orderOptions.filter(x => x.order === order)[0];
 
   const dispatch = useDispatch();
 
@@ -36,6 +44,31 @@ const Filter = ({navigator, route}) => {
             }}
             rowTextForSelection={(item, index) => {
               return `${item.region} ${item.name}`;
+            }}
+          />
+        </View>
+        <View style={styles.labelContainer}>
+          <Text style={styles.filterLabel}>Order results</Text>
+        </View>
+        <View style={styles.inputContainer}>
+          <SelectDropdown
+            defaultValue={selectedOrder}
+            buttonStyle={styles.dropdownBtnStyle}
+            buttonTextStyle={styles.dropdownBtnTxtStyle}
+            dropdownStyle={styles.dropdownDropdownStyle}
+            rowStyle={styles.dropdownRowStyle}
+            rowTextStyle={styles.dropdownRowTxtStyle}
+            data={orderOptions}
+            onSelect={(selectedItem, index) => {
+              console.log('selectedItem: ' + JSON.stringify(selectedItem));
+              let action = updateFilterOrder(selectedItem.order);
+              dispatch(action);
+            }}
+            buttonTextAfterSelection={(selectedItem, index) => {
+              return `${selectedItem.name}`;
+            }}
+            rowTextForSelection={(item, index) => {
+              return `${item.name}`;
             }}
           />
         </View>

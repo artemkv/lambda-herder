@@ -6,7 +6,6 @@ import Spinner from './Spinner';
 import {useSelector} from 'react-redux';
 import EmptyState from './EmptyState';
 import {getConnection} from '../persistence';
-import {jj} from '../util';
 
 const LambdaListContainer = ({navigation}) => {
   const DATA_NOT_LOADED = 0;
@@ -19,8 +18,9 @@ const LambdaListContainer = ({navigation}) => {
   const [refreshing, setRefreshing] = React.useState(false);
 
   const currentRegion = useSelector(state => state.settings.region);
+  const order = useSelector(state => state.settings.order);
 
-  const loadData = async region => {
+  const loadData = async (region, order) => {
     try {
       setDataLoadingStatus(DATA_NOT_LOADED);
       const conn = await getConnection();
@@ -28,6 +28,7 @@ const LambdaListContainer = ({navigation}) => {
         region,
         conn.accessKeyId,
         conn.secretAccessKey,
+        order,
       );
       let metricData = [];
       if (lambdas.length > 0) {
@@ -47,15 +48,15 @@ const LambdaListContainer = ({navigation}) => {
   };
 
   useEffect(() => {
-    loadData(currentRegion);
-  }, [currentRegion]);
+    loadData(currentRegion, order);
+  }, [currentRegion, order]);
 
   const onRefresh = useCallback(() => {
     setRefreshing(true);
-    loadData(currentRegion).then(_ => {
+    loadData(currentRegion, order).then(_ => {
       setRefreshing(false);
     });
-  }, [currentRegion]);
+  }, [currentRegion, order]);
 
   switch (dataLoadingStatus) {
     case DATA_NOT_LOADED:

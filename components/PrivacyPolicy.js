@@ -20,16 +20,17 @@ const PrivacyPoLicy = props => {
       <Text style={styles.text}>Effective as of January 1st, 2022</Text>
       <Text style={styles.text} />
       <Text style={styles.text}>
-        This policy explains how "Lambda Herder" mobile application collects,
-        stores, uses, transfers and shares Personal Data from its users.
+        This policy explains how "Monitor Lambda Functions" mobile application
+        collects, stores, uses, transfers and shares Personal Data from its
+        users.
       </Text>
       <Text style={styles.text} />
       <Text style={styles.h1}>Data We Collect about You</Text>
       <Text style={styles.text} />
       <Text style={styles.h2}>Personal Data</Text>
       <Text style={styles.text}>
-        "Lambda Herder" does not require sign in, so we don't ask for any
-        identifying data, such as user name or email address.
+        "Monitor Lambda Functions" does not require sign in, so we don't ask for
+        any identifying data, such as user name or email address.
       </Text>
       <Text style={styles.text} />
       <Text style={styles.text}>

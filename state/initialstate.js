@@ -1,5 +1,5 @@
 import {getDefaultRegion, getRegionIndex, getRegions} from '../awsregions';
-import {SPLASH} from './constants';
+import {SPLASH, ORDER_BY_NAME} from './constants';
 
 const getInitialState = () => {
   const regions = getRegions();
@@ -9,10 +9,12 @@ const getInitialState = () => {
     settings: {
       region: getDefaultRegion(), // 'us-east-1'
       regionName: regions[getRegionIndex(getDefaultRegion())].name,
+      order: ORDER_BY_NAME,
     },
     filter: {
       regions,
       region: regions[getRegionIndex(getDefaultRegion())], // {region: 'us-east-1', name: 'US East (N. Virginia)'}
+      order: ORDER_BY_NAME,
     },
   };
 };
