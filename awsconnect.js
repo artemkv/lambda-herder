@@ -39,7 +39,7 @@ export const listLambdas = async (
   order,
 ) => {
   if (isDemo(accessKeyId, secretAccessKey)) {
-    return listLambdasDemo();
+    return listLambdasDemo(order);
   }
 
   const client = new LambdaClient({
@@ -79,7 +79,7 @@ export const getMetricData = async (
   secretAccessKey,
 ) => {
   if (isDemo(accessKeyId, secretAccessKey)) {
-    return getMetricDataDemo();
+    return getMetricDataDemo(names);
   }
 
   const client = new CloudWatchClient({

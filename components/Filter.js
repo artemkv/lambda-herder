@@ -60,7 +60,6 @@ const Filter = ({navigator, route}) => {
             rowTextStyle={styles.dropdownRowTxtStyle}
             data={orderOptions}
             onSelect={(selectedItem, index) => {
-              console.log('selectedItem: ' + JSON.stringify(selectedItem));
               let action = updateFilterOrder(selectedItem.order);
               dispatch(action);
             }}

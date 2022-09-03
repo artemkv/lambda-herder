@@ -1,15 +1,26 @@
-export const listLambdasDemo = () => {
+import {ORDER_BY_NAME} from './state/constants';
+
+export const listLambdasDemo = order => {
+  if (order === ORDER_BY_NAME) {
+    return [
+      'demo-lambda-function-01',
+      'demo-lambda-function-02',
+      'demo-lambda-function-03',
+      'demo-lambda-function-04',
+      'demo-lambda-function-05',
+    ];
+  }
   return [
-    'demo-lambda-function-01',
-    'demo-lambda-function-02',
     'demo-lambda-function-03',
     'demo-lambda-function-04',
+    'demo-lambda-function-01',
     'demo-lambda-function-05',
+    'demo-lambda-function-02',
   ];
 };
 
-export const getMetricDataDemo = () => {
-  return [
+export const getMetricDataDemo = names => {
+  const metricData = [
     {
       name: 'demo-lambda-function-01',
       metrics: {
@@ -61,6 +72,8 @@ export const getMetricDataDemo = () => {
       },
     },
   ];
+
+  return names.map(n => metricData.filter(m => m.name === n)[0]);
 };
 
 const randomArray = (n, r) => {
