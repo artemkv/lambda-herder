@@ -2,32 +2,18 @@ import React from 'react';
 import {StyleSheet, View, Text, StatusBar, SafeAreaView} from 'react-native';
 import SelectDropdown from 'react-native-select-dropdown';
 import {useSelector, useDispatch} from 'react-redux';
-import {updateFilterRegion, updateFilterOrder} from '../state/actions';
 import {
-  ORDER_BY_NAME,
-  ORDER_BY_DATE,
-  ORDER_BY_INVOCATIONS,
-  ORDER_BY_DURATION,
-  ORDER_BY_ERRORS,
-  ORDER_BY_THROTTLING,
-  ORDER_BY_CNCS,
-} from '../state/constants';
-
-const orderOptions = [
-  {name: 'Function name', order: ORDER_BY_NAME},
-  {name: 'Date modified', order: ORDER_BY_DATE},
-  {name: '# of invocations', order: ORDER_BY_INVOCATIONS},
-  {name: 'Avg duration', order: ORDER_BY_DURATION},
-  {name: '# of errors', order: ORDER_BY_ERRORS},
-  {name: '# of throttles', order: ORDER_BY_THROTTLING},
-  {name: 'Avg number of concurrent executions', order: ORDER_BY_CNCS},
-];
+  updateFilterRegionIndex,
+  updateFilterOrderIndex,
+} from '../state/actions';
+import {saveSelectedRegion, saveSelectedOrder} from '../persistence';
+import {jj} from '../util';
 
 const Filter = ({navigator, route}) => {
-  const region = useSelector(state => state.filter.region);
+  const regionIndex = useSelector(state => state.filter.regionIndex);
   const regions = useSelector(state => state.filter.regions);
-  const order = useSelector(state => state.filter.order);
-  const selectedOrder = orderOptions.filter(x => x.order === order)[0];
+  const orderIndex = useSelector(state => state.filter.orderIndex);
+  const orderOptions = useSelector(state => state.filter.orderOptions);
 
   const dispatch = useDispatch();
 
@@ -40,7 +26,7 @@ const Filter = ({navigator, route}) => {
         </View>
         <View style={styles.inputContainer}>
           <SelectDropdown
-            defaultValue={region}
+            defaultValueByIndex={regionIndex}
             defaultButtonText={'Select region'}
             buttonStyle={styles.dropdownBtnStyle}
             buttonTextStyle={styles.dropdownBtnTxtStyle}
@@ -49,8 +35,9 @@ const Filter = ({navigator, route}) => {
             rowTextStyle={styles.dropdownRowTxtStyle}
             data={regions}
             onSelect={(selectedItem, index) => {
-              let action = updateFilterRegion(selectedItem);
+              let action = updateFilterRegionIndex(index);
               dispatch(action);
+              saveSelectedRegion(selectedItem.region);
             }}
             buttonTextAfterSelection={(selectedItem, index) => {
               return `${selectedItem.region} ${selectedItem.name}`;
@@ -65,7 +52,7 @@ const Filter = ({navigator, route}) => {
         </View>
         <View style={styles.inputContainer}>
           <SelectDropdown
-            defaultValue={selectedOrder}
+            defaultValueByIndex={orderIndex}
             buttonStyle={styles.dropdownBtnStyle}
             buttonTextStyle={styles.dropdownBtnTxtStyle}
             dropdownStyle={styles.dropdownDropdownStyle}
@@ -73,8 +60,9 @@ const Filter = ({navigator, route}) => {
             rowTextStyle={styles.dropdownRowTxtStyle}
             data={orderOptions}
             onSelect={(selectedItem, index) => {
-              let action = updateFilterOrder(selectedItem.order);
+              let action = updateFilterOrderIndex(index);
               dispatch(action);
+              saveSelectedOrder(selectedItem.order);
             }}
             buttonTextAfterSelection={(selectedItem, index) => {
               return `${selectedItem.name}`;

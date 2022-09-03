@@ -1,20 +1,27 @@
 import {getDefaultRegion, getRegionIndex, getRegions} from '../awsregions';
-import {SPLASH, ORDER_BY_NAME} from './constants';
+import {
+  getOrderOptions,
+  getDefaultOrderOption,
+  getOrderOptionIndex,
+} from '../awslambdaordering';
+import {SPLASH} from './constants';
 
 const getInitialState = () => {
   const regions = getRegions();
+  const orderOptions = getOrderOptions();
 
   return {
     flowState: SPLASH,
     settings: {
-      region: getDefaultRegion(), // 'us-east-1'
-      regionName: regions[getRegionIndex(getDefaultRegion())].name,
-      order: ORDER_BY_NAME,
+      region: getDefaultRegion(), // e.g. 'us-east-1'
+      regionName: regions[getRegionIndex(getDefaultRegion())].name, // e.g. 'US East (N. Virginia)'
+      order: getDefaultOrderOption(), // e.g. ORDER_BY_NAME
     },
     filter: {
       regions,
-      region: regions[getRegionIndex(getDefaultRegion())], // {region: 'us-east-1', name: 'US East (N. Virginia)'}
-      order: ORDER_BY_NAME,
+      regionIndex: getRegionIndex(getDefaultRegion()),
+      orderOptions,
+      orderIndex: getOrderOptionIndex(getDefaultOrderOption()),
     },
   };
 };

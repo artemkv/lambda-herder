@@ -11,6 +11,7 @@ const MainScreen = () => {
   const Stack = createNativeStackNavigator();
 
   const currentRegionName = useSelector(state => state.settings.regionName);
+  const currentOrder = useSelector(state => state.settings.order);
   const dispatch = useDispatch();
 
   return (

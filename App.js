@@ -11,6 +11,8 @@ import {
   saveAcceptance,
   getConnection,
   saveConnection,
+  getSelectedRegion,
+  getSelectedOrder,
 } from './persistence';
 import {
   SPLASH,
@@ -21,6 +23,7 @@ import {
 import {
   flowNeedAcceptance,
   flowNeedConnection,
+  restoreFilter,
   flowAllGood,
 } from './state/actions';
 
@@ -41,50 +44,59 @@ const App = () => {
   const flowState = useSelector(state => state.flowState);
   const dispatch = useDispatch();
 
+  // This is for ConnectionSettings screen
   const [connection, setConnection] = useState({
     accessKeyId: '',
     secretAccessKey: '',
   });
 
-  const handleAcceptance = acc => {
+  useEffect(() => {
+    if (flowState === SPLASH) {
+      initializeApp();
+    }
+  }, [flowState]);
+
+  const initializeApp = _ => {
+    wait(2000).then(ensureAcceptance);
+  };
+
+  const ensureAcceptance = async _ => {
+    const acc = await getAcceptance();
     if (!acc.status) {
       dispatch(flowNeedAcceptance());
       return;
     }
-    return getConnection().then(handleConnection);
+    return initializeConnection();
   };
 
-  const handleConnection = conn => {
+  const initializeConnection = async _ => {
+    const conn = await getConnection();
     setConnection(conn);
     if (!conn.accessKeyId || !conn.secretAccessKey) {
       dispatch(flowNeedConnection());
       return;
     }
-    dispatch(flowAllGood());
+    return restoreFilterValues();
   };
 
-  useEffect(() => {
-    if (flowState === SPLASH) {
-      wait(2000).then(getAcceptance).then(handleAcceptance);
-    }
-  }, [flowState]);
+  const restoreFilterValues = async _ => {
+    const region = await getSelectedRegion();
+    const order = await getSelectedOrder();
+    dispatch(restoreFilter(region, order));
+    dispatch(flowAllGood());
+  };
 
   const onPolicyAccepted = () => {
     saveAcceptance({
       status: true,
-    })
-      .then(getConnection)
-      .then(handleConnection);
+    }).then(initializeConnection);
   };
 
   const onConnectionConfigured = (accessKeyId, secretAccessKey) => {
     saveConnection({
       accessKeyId,
       secretAccessKey,
-    }).then(_ => {
-      dispatch(flowAllGood());
-      return;
-    });
+    }).then(restoreFilterValues);
   };
 
   switch (flowState) {

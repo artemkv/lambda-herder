@@ -10,14 +10,19 @@ export const initFilter = _ => ({
   payload: {},
 });
 
-export const updateFilterRegion = region => ({
+export const updateFilterRegionIndex = regionIndex => ({
   type: actionTypes.UPDATE_FILTER_REGION,
-  payload: {region},
+  payload: {regionIndex},
 });
 
-export const updateFilterOrder = order => ({
+export const updateFilterOrderIndex = orderIndex => ({
   type: actionTypes.UPDATE_FILTER_ORDER,
-  payload: {order},
+  payload: {orderIndex},
+});
+
+export const restoreFilter = (region, order) => ({
+  type: actionTypes.RESTORE_FILTER,
+  payload: {region, order},
 });
 
 export const flowReInit = _ => ({

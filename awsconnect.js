@@ -20,7 +20,7 @@ import {
   ORDER_BY_ERRORS,
   ORDER_BY_THROTTLING,
   ORDER_BY_CNCS,
-} from './state/constants';
+} from './awslambdaordering';
 
 const byDate = (a, b) => new Date(a).getTime() - new Date(b).getTime();
 const byDateDescending = (a, b) =>

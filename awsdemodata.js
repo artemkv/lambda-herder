@@ -7,7 +7,7 @@ import {
   ORDER_BY_ERRORS,
   ORDER_BY_THROTTLING,
   ORDER_BY_CNCS,
-} from './state/constants';
+} from './awslambdaordering';
 
 const sum = aa => aa.reduce((acc, cur) => acc + cur, 0);
 const avg = aa => (aa.length > 0 ? sum(aa) / aa.length : 0);
