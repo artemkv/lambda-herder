@@ -3,11 +3,24 @@ import {StyleSheet, View, Text, StatusBar, SafeAreaView} from 'react-native';
 import SelectDropdown from 'react-native-select-dropdown';
 import {useSelector, useDispatch} from 'react-redux';
 import {updateFilterRegion, updateFilterOrder} from '../state/actions';
-import {ORDER_BY_NAME, ORDER_BY_DATE} from '../state/constants';
+import {
+  ORDER_BY_NAME,
+  ORDER_BY_DATE,
+  ORDER_BY_INVOCATIONS,
+  ORDER_BY_DURATION,
+  ORDER_BY_ERRORS,
+  ORDER_BY_THROTTLING,
+  ORDER_BY_CNCS,
+} from '../state/constants';
 
 const orderOptions = [
-  {name: 'by function name', order: ORDER_BY_NAME},
-  {name: 'most recently updated first', order: ORDER_BY_DATE},
+  {name: 'Function name', order: ORDER_BY_NAME},
+  {name: 'Date modified', order: ORDER_BY_DATE},
+  {name: '# of invocations', order: ORDER_BY_INVOCATIONS},
+  {name: 'Avg duration', order: ORDER_BY_DURATION},
+  {name: '# of errors', order: ORDER_BY_ERRORS},
+  {name: '# of throttles', order: ORDER_BY_THROTTLING},
+  {name: 'Avg number of concurrent executions', order: ORDER_BY_CNCS},
 ];
 
 const Filter = ({navigator, route}) => {
@@ -48,7 +61,7 @@ const Filter = ({navigator, route}) => {
           />
         </View>
         <View style={styles.labelContainer}>
-          <Text style={styles.filterLabel}>Order results</Text>
+          <Text style={styles.filterLabel}>Order results by</Text>
         </View>
         <View style={styles.inputContainer}>
           <SelectDropdown

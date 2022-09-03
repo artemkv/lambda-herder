@@ -12,7 +12,15 @@ import {
 } from '@aws-sdk/client-cloudwatch';
 import {from, pair} from 'datashaper-js';
 import {listLambdasDemo, getMetricDataDemo, getLogsDemo} from './awsdemodata';
-import {ORDER_BY_NAME, ORDER_BY_DATE} from './state/constants';
+import {
+  ORDER_BY_NAME,
+  ORDER_BY_DATE,
+  ORDER_BY_INVOCATIONS,
+  ORDER_BY_DURATION,
+  ORDER_BY_ERRORS,
+  ORDER_BY_THROTTLING,
+  ORDER_BY_CNCS,
+} from './state/constants';
 
 const byDate = (a, b) => new Date(a).getTime() - new Date(b).getTime();
 const byDateDescending = (a, b) =>
@@ -23,14 +31,8 @@ const isDemo = (accessKeyId, secretAccessKey) => {
   return !accessKeyId || !secretAccessKey;
 };
 
-// Different metrics:
-// https://docs.aws.amazon.com/lambda/latest/dg/monitoring-metrics.html
-// Good ones:
-// - Invocations
-// - Errors
-// - Throttles
-// - Duration
-// - ConcurrentExecutions
+const sum = aa => aa.reduce((acc, cur) => acc + cur, 0);
+const avg = aa => (aa.length > 0 ? sum(aa) / aa.length : 0);
 
 export const listLambdas = async (
   region,
@@ -72,11 +74,20 @@ export const listLambdas = async (
   return pipe.map(f => f.FunctionName).return();
 };
 
+// Different metrics:
+// https://docs.aws.amazon.com/lambda/latest/dg/monitoring-metrics.html
+// Good ones:
+// - Invocations
+// - Errors
+// - Throttles
+// - Duration
+// - ConcurrentExecutions
 export const getMetricData = async (
   region,
   names,
   accessKeyId,
   secretAccessKey,
+  order,
 ) => {
   if (isDemo(accessKeyId, secretAccessKey)) {
     return getMetricDataDemo(names);
@@ -111,6 +122,7 @@ export const getMetricData = async (
   });
 
   const data = await client.send(command);
+
   const metrics = from(data.MetricDataResults)
     .toMap(
       x => x.Id,
@@ -124,21 +136,37 @@ export const getMetricData = async (
     )
     .return();
 
-  return from(names)
-    .map(n => ({
-      name: n,
-      metrics: {
-        inv: prependZeroes(metrics[getInvocationsId(metricIds[n])], 24),
-        dur: prependZeroes(metrics[getDurationId(metricIds[n])], 24),
-        err: prependZeroes(metrics[getErrorsId(metricIds[n])], 24),
-        thr: prependZeroes(metrics[getThrottlesId(metricIds[n])], 24),
-        cnc: prependZeroes(
-          metrics[getConcurrentExecutionsId(metricIds[n])],
-          24,
-        ),
-      },
-    }))
-    .return();
+  let pipe = from(names).map(n => ({
+    name: n,
+    metrics: {
+      inv: prependZeroes(metrics[getInvocationsId(metricIds[n])], 24),
+      dur: prependZeroes(metrics[getDurationId(metricIds[n])], 24),
+      err: prependZeroes(metrics[getErrorsId(metricIds[n])], 24),
+      thr: prependZeroes(metrics[getThrottlesId(metricIds[n])], 24),
+      cnc: prependZeroes(metrics[getConcurrentExecutionsId(metricIds[n])], 24),
+    },
+    aggregates: {
+      inv: sum(metrics[getInvocationsId(metricIds[n])]),
+      dur: avg(metrics[getDurationId(metricIds[n])]),
+      err: sum(metrics[getErrorsId(metricIds[n])]),
+      thr: sum(metrics[getThrottlesId(metricIds[n])]),
+      cnc: avg(metrics[getConcurrentExecutionsId(metricIds[n])]),
+    },
+  }));
+
+  if (order === ORDER_BY_INVOCATIONS) {
+    pipe = pipe.sorted((a, b) => b.aggregates.inv - a.aggregates.inv);
+  } else if (order === ORDER_BY_DURATION) {
+    pipe = pipe.sorted((a, b) => b.aggregates.dur - a.aggregates.dur);
+  } else if (order === ORDER_BY_ERRORS) {
+    pipe = pipe.sorted((a, b) => b.aggregates.err - a.aggregates.err);
+  } else if (order === ORDER_BY_THROTTLING) {
+    pipe = pipe.sorted((a, b) => b.aggregates.thr - a.aggregates.thr);
+  } else if (order === ORDER_BY_CNCS) {
+    pipe = pipe.sorted((a, b) => b.aggregates.cnc - a.aggregates.cnc);
+  }
+
+  return pipe.return();
 };
 
 const prependZeroes = (aa, n) => {

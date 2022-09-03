@@ -24,31 +24,44 @@ const LambdaDetails = ({data, log, refreshing, onRefresh}) => {
       <Text style={styles.lambdaHeader}>{data.name}</Text>
       <Trends data={data} />
       <View style={styles.divider} />
+      <Text style={styles.chartsHeader}>Last 24 hours</Text>
       <Text style={styles.chartTitle}>Invocations</Text>
+      <Text
+        style={styles.chartSubTitle}>{`Total: ${data.aggregates.inv}`}</Text>
       <VictoryChart height={200} width={350} theme={VictoryTheme.material}>
         <VictoryGroup color="#2d89ef">
           <VictoryLine data={data1} x="idx" y="v" />
         </VictoryGroup>
       </VictoryChart>
       <Text style={styles.chartTitle}>Duration</Text>
+      <Text style={styles.chartSubTitle}>{`Avg: ${data.aggregates.dur.toFixed(
+        2,
+      )} ms`}</Text>
       <VictoryChart height={200} width={350} theme={VictoryTheme.material}>
         <VictoryGroup color="#2d89ef">
           <VictoryLine data={data2} x="idx" y="v" />
         </VictoryGroup>
       </VictoryChart>
       <Text style={styles.chartTitle}>Errors</Text>
+      <Text
+        style={styles.chartSubTitle}>{`Total: ${data.aggregates.err}`}</Text>
       <VictoryChart height={200} width={350} theme={VictoryTheme.material}>
         <VictoryGroup color="#2d89ef">
           <VictoryLine data={data3} x="idx" y="v" />
         </VictoryGroup>
       </VictoryChart>
       <Text style={styles.chartTitle}>Throttles</Text>
+      <Text
+        style={styles.chartSubTitle}>{`Total: ${data.aggregates.thr}`}</Text>
       <VictoryChart height={200} width={350} theme={VictoryTheme.material}>
         <VictoryGroup color="#2d89ef">
           <VictoryLine data={data4} x="idx" y="v" />
         </VictoryGroup>
       </VictoryChart>
       <Text style={styles.chartTitle}>Concurrent executions</Text>
+      <Text style={styles.chartSubTitle}>{`Avg: ${data.aggregates.cnc.toFixed(
+        2,
+      )}`}</Text>
       <VictoryChart height={200} width={350} theme={VictoryTheme.material}>
         <VictoryGroup color="#2d89ef">
           <VictoryLine data={data5} x="idx" y="v" />
@@ -90,10 +103,21 @@ const styles = StyleSheet.create({
   logContainer: {
     marginTop: 16,
   },
+  chartsHeader: {
+    marginTop: 8,
+    fontSize: 16,
+    textAlign: 'center',
+    fontWeight: '600',
+  },
   chartTitle: {
     marginTop: 8,
     fontSize: 22,
     fontWeight: '600',
+    textAlign: 'center',
+  },
+  chartSubTitle: {
+    marginTop: 8,
+    fontSize: 16,
     textAlign: 'center',
   },
   divider: {

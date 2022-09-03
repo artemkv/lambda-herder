@@ -37,6 +37,7 @@ const LambdaListContainer = ({navigation}) => {
           lambdas,
           conn.accessKeyId,
           conn.secretAccessKey,
+          order,
         );
       }
       setData(metricData);
