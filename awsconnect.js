@@ -90,7 +90,7 @@ export const getMetricData = async (
   order,
 ) => {
   if (isDemo(accessKeyId, secretAccessKey)) {
-    return getMetricDataDemo(names);
+    return getMetricDataDemo(names, order);
   }
 
   const client = new CloudWatchClient({

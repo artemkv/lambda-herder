@@ -1,4 +1,16 @@
-import {ORDER_BY_NAME} from './state/constants';
+import {from} from 'datashaper-js';
+import {
+  ORDER_BY_NAME,
+  ORDER_BY_DATE,
+  ORDER_BY_INVOCATIONS,
+  ORDER_BY_DURATION,
+  ORDER_BY_ERRORS,
+  ORDER_BY_THROTTLING,
+  ORDER_BY_CNCS,
+} from './state/constants';
+
+const sum = aa => aa.reduce((acc, cur) => acc + cur, 0);
+const avg = aa => (aa.length > 0 ? sum(aa) / aa.length : 0);
 
 export const listLambdasDemo = order => {
   if (order === ORDER_BY_NAME) {
@@ -19,8 +31,8 @@ export const listLambdasDemo = order => {
   ];
 };
 
-export const getMetricDataDemo = names => {
-  const metricData = [
+export const getMetricDataDemo = (names, order) => {
+  let metricData = [
     {
       name: 'demo-lambda-function-01',
       metrics: {
@@ -73,7 +85,36 @@ export const getMetricDataDemo = names => {
     },
   ];
 
-  return names.map(n => metricData.filter(m => m.name === n)[0]);
+  let pipe = from(metricData).map(m => ({
+    name: m.name,
+    metrics: m.metrics,
+    aggregates: {
+      inv: sum(m.metrics.inv),
+      dur: avg(m.metrics.dur),
+      err: sum(m.metrics.err),
+      thr: sum(m.metrics.thr),
+      cnc: avg(m.metrics.cnc),
+    },
+  }));
+
+  if (order === ORDER_BY_INVOCATIONS) {
+    pipe = pipe.sorted((a, b) => b.aggregates.inv - a.aggregates.inv);
+  } else if (order === ORDER_BY_DURATION) {
+    pipe = pipe.sorted((a, b) => b.aggregates.dur - a.aggregates.dur);
+  } else if (order === ORDER_BY_ERRORS) {
+    pipe = pipe.sorted((a, b) => b.aggregates.err - a.aggregates.err);
+  } else if (order === ORDER_BY_THROTTLING) {
+    pipe = pipe.sorted((a, b) => b.aggregates.thr - a.aggregates.thr);
+  } else if (order === ORDER_BY_CNCS) {
+    pipe = pipe.sorted((a, b) => b.aggregates.cnc - a.aggregates.cnc);
+  }
+
+  metricData = pipe.return();
+
+  if (order === ORDER_BY_NAME || order === ORDER_BY_DATE) {
+    return names.map(n => metricData.filter(m => m.name === n)[0]);
+  }
+  return metricData;
 };
 
 const randomArray = (n, r) => {
