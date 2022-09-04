@@ -13,7 +13,7 @@ const orderOptions = [
   {name: 'Avg duration', order: ORDER_BY_DURATION},
   {name: '# of errors', order: ORDER_BY_ERRORS},
   {name: '# of throttles', order: ORDER_BY_THROTTLING},
-  {name: 'Avg number of concurrent executions', order: ORDER_BY_CNCS},
+  {name: 'Avg # of concurrent executions', order: ORDER_BY_CNCS},
 ];
 
 export const getOrderOptions = () => orderOptions;

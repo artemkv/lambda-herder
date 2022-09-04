@@ -1,14 +1,9 @@
 import {getDefaultRegion, getRegionIndex, getRegions} from '../awsregions';
-import {
-  getOrderOptions,
-  getDefaultOrderOption,
-  getOrderOptionIndex,
-} from '../awslambdaordering';
+import {getDefaultOrderOption} from '../awslambdaordering';
 import {SPLASH} from './constants';
 
 const getInitialState = () => {
   const regions = getRegions();
-  const orderOptions = getOrderOptions();
 
   return {
     flowState: SPLASH,
@@ -20,8 +15,6 @@ const getInitialState = () => {
     filter: {
       regions,
       regionIndex: getRegionIndex(getDefaultRegion()),
-      orderOptions,
-      orderIndex: getOrderOptionIndex(getDefaultOrderOption()),
     },
   };
 };

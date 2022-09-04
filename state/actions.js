@@ -15,14 +15,14 @@ export const updateFilterRegionIndex = regionIndex => ({
   payload: {regionIndex},
 });
 
-export const updateFilterOrderIndex = orderIndex => ({
-  type: actionTypes.UPDATE_FILTER_ORDER,
-  payload: {orderIndex},
+export const restoreAppState = (region, order) => ({
+  type: actionTypes.RESTORE_APP_STATE,
+  payload: {region, order},
 });
 
-export const restoreFilter = (region, order) => ({
-  type: actionTypes.RESTORE_FILTER,
-  payload: {region, order},
+export const updateSortingOrderIndex = orderIndex => ({
+  type: actionTypes.UPDATE_SORTING_ORDER,
+  payload: {orderIndex},
 });
 
 export const flowReInit = _ => ({

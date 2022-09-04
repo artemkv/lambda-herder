@@ -2,18 +2,12 @@ import React from 'react';
 import {StyleSheet, View, Text, StatusBar, SafeAreaView} from 'react-native';
 import SelectDropdown from 'react-native-select-dropdown';
 import {useSelector, useDispatch} from 'react-redux';
-import {
-  updateFilterRegionIndex,
-  updateFilterOrderIndex,
-} from '../state/actions';
-import {saveSelectedRegion, saveSelectedOrder} from '../persistence';
-import {jj} from '../util';
+import {updateFilterRegionIndex} from '../state/actions';
+import {saveSelectedRegion} from '../persistence';
 
 const Filter = ({navigator, route}) => {
   const regionIndex = useSelector(state => state.filter.regionIndex);
   const regions = useSelector(state => state.filter.regions);
-  const orderIndex = useSelector(state => state.filter.orderIndex);
-  const orderOptions = useSelector(state => state.filter.orderOptions);
 
   const dispatch = useDispatch();
 
@@ -44,31 +38,6 @@ const Filter = ({navigator, route}) => {
             }}
             rowTextForSelection={(item, index) => {
               return `${item.region} ${item.name}`;
-            }}
-          />
-        </View>
-        <View style={styles.labelContainer}>
-          <Text style={styles.filterLabel}>Order results by</Text>
-        </View>
-        <View style={styles.inputContainer}>
-          <SelectDropdown
-            defaultValueByIndex={orderIndex}
-            buttonStyle={styles.dropdownBtnStyle}
-            buttonTextStyle={styles.dropdownBtnTxtStyle}
-            dropdownStyle={styles.dropdownDropdownStyle}
-            rowStyle={styles.dropdownRowStyle}
-            rowTextStyle={styles.dropdownRowTxtStyle}
-            data={orderOptions}
-            onSelect={(selectedItem, index) => {
-              let action = updateFilterOrderIndex(index);
-              dispatch(action);
-              saveSelectedOrder(selectedItem.order);
-            }}
-            buttonTextAfterSelection={(selectedItem, index) => {
-              return `${selectedItem.name}`;
-            }}
-            rowTextForSelection={(item, index) => {
-              return `${item.name}`;
             }}
           />
         </View>

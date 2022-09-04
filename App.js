@@ -23,7 +23,7 @@ import {
 import {
   flowNeedAcceptance,
   flowNeedConnection,
-  restoreFilter,
+  restoreAppState,
   flowAllGood,
 } from './state/actions';
 
@@ -76,13 +76,13 @@ const App = () => {
       dispatch(flowNeedConnection());
       return;
     }
-    return restoreFilterValues();
+    return restoreSavedAppState();
   };
 
-  const restoreFilterValues = async _ => {
+  const restoreSavedAppState = async _ => {
     const region = await getSelectedRegion();
     const order = await getSelectedOrder();
-    dispatch(restoreFilter(region, order));
+    dispatch(restoreAppState(region, order));
     dispatch(flowAllGood());
   };
 
@@ -96,7 +96,7 @@ const App = () => {
     saveConnection({
       accessKeyId,
       secretAccessKey,
-    }).then(restoreFilterValues);
+    }).then(restoreSavedAppState);
   };
 
   switch (flowState) {

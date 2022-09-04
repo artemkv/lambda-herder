@@ -8,6 +8,7 @@ import {
 } from 'react-native';
 import Lambda from './Lambda';
 import ErrorRatePieChart from './ErrorRatePieChart';
+import SortingOrder from './SortingOrder';
 
 const LambdaList = ({lambdas, navigation, refreshing, onRefresh}) => {
   return (
@@ -21,7 +22,12 @@ const LambdaList = ({lambdas, navigation, refreshing, onRefresh}) => {
           <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
         }
         ListHeaderComponent={() => {
-          return <ErrorRatePieChart data={lambdas} />;
+          return (
+            <View>
+              <SortingOrder />
+              <ErrorRatePieChart data={lambdas} />
+            </View>
+          );
         }}
       />
     </View>
