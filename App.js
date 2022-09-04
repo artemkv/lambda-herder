@@ -1,6 +1,11 @@
 import 'react-native-gesture-handler';
 import React, {useState, useEffect} from 'react';
-import {initialize} from 'journey3-react-native-sdk';
+import {
+  startSession,
+  reportAceptedPolicy,
+  reportConnectedAccount,
+  reportEnterWithDemoData,
+} from './journeyconnector';
 import Splash from './components/Splash';
 import PrivacyPolicy from './components/PrivacyPolicy';
 import ConnectionSettings from './components/ConnectionSettings';
@@ -33,12 +38,7 @@ function wait(ms) {
 
 const App = () => {
   useEffect(() => {
-    initialize(
-      'e04b43c9-69c1-4172-9dfd-a3ef1aa17d5e',
-      '9d6261fe-e565-47bf-8a83-6ee801f43d43',
-      '1.0',
-      false,
-    );
+    startSession();
   }, []);
 
   const flowState = useSelector(state => state.flowState);
@@ -70,16 +70,26 @@ const App = () => {
   };
 
   const initializeConnection = async _ => {
+    // analytics
+    reportAceptedPolicy();
+
     const conn = await getConnection();
     setConnection(conn);
     if (!conn.accessKeyId || !conn.secretAccessKey) {
       dispatch(flowNeedConnection());
       return;
     }
-    return restoreSavedAppState();
+    return restoreSavedAppState(true);
   };
 
-  const restoreSavedAppState = async _ => {
+  const restoreSavedAppState = async connected => {
+    // analytics
+    if (connected) {
+      reportConnectedAccount();
+    } else {
+      reportEnterWithDemoData();
+    }
+
     const region = await getSelectedRegion();
     const order = await getSelectedOrder();
     dispatch(restoreAppState(region, order));
@@ -93,10 +103,11 @@ const App = () => {
   };
 
   const onConnectionConfigured = (accessKeyId, secretAccessKey) => {
+    const connected = accessKeyId && secretAccessKey;
     saveConnection({
       accessKeyId,
       secretAccessKey,
-    }).then(restoreSavedAppState);
+    }).then(_ => restoreSavedAppState(connected));
   };
 
   switch (flowState) {

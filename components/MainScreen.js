@@ -6,6 +6,7 @@ import {initFilter, applyFilter} from '../state/actions';
 import LambdaListContainer from './LambdaListContainer';
 import LambdaDetailsContainer from './LambdaDetailsContainer';
 import Filter from './Filter';
+import {reportApplyFilter} from '../journeyconnector';
 
 const MainScreen = () => {
   const Stack = createNativeStackNavigator();
@@ -72,6 +73,7 @@ const MainScreen = () => {
               onPress={() => {
                 let action = applyFilter();
                 dispatch(action);
+                reportApplyFilter();
                 navigation.goBack();
               }}
             />

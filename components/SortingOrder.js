@@ -5,6 +5,7 @@ import {updateSortingOrderIndex} from '../state/actions';
 import {useSelector, useDispatch} from 'react-redux';
 import {saveSelectedOrder} from '../persistence';
 import {getOrderOptionIndex, getOrderOptions} from '../awslambdaordering';
+import {reportPickSortingOrder} from '../journeyconnector';
 
 const SortingOrder = props => {
   const order = useSelector(state => state.settings.order);
@@ -27,6 +28,7 @@ const SortingOrder = props => {
           let action = updateSortingOrderIndex(index);
           dispatch(action);
           saveSelectedOrder(selectedItem.order);
+          reportPickSortingOrder(selectedItem.order);
         }}
         buttonTextAfterSelection={(selectedItem, index) => {
           return `Order by: ${selectedItem.name}`;

@@ -1,13 +1,18 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import {StyleSheet, View, Text, StatusBar, SafeAreaView} from 'react-native';
 import SelectDropdown from 'react-native-select-dropdown';
 import {useSelector, useDispatch} from 'react-redux';
 import {updateFilterRegionIndex} from '../state/actions';
 import {saveSelectedRegion} from '../persistence';
+import {reportChangeRegion, reportNavigateToFilter} from '../journeyconnector';
 
 const Filter = ({navigator, route}) => {
   const regionIndex = useSelector(state => state.filter.regionIndex);
   const regions = useSelector(state => state.filter.regions);
+
+  useEffect(() => {
+    reportNavigateToFilter();
+  }, []);
 
   const dispatch = useDispatch();
 
@@ -32,6 +37,7 @@ const Filter = ({navigator, route}) => {
               let action = updateFilterRegionIndex(index);
               dispatch(action);
               saveSelectedRegion(selectedItem.region);
+              reportChangeRegion();
             }}
             buttonTextAfterSelection={(selectedItem, index) => {
               return `${selectedItem.region} ${selectedItem.name}`;

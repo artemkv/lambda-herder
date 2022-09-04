@@ -1,11 +1,14 @@
 import React, {useState, useEffect, useCallback} from 'react';
 import {getLogs} from '../awsconnect';
 import LambdaDetails from './LambdaDetails';
-import {reportEvent, reportStageTransition} from 'journey3-react-native-sdk';
 import Error from './Error';
 import Spinner from './Spinner';
 import {useSelector} from 'react-redux';
 import {getConnection} from '../persistence';
+import {
+  reportErrorLoadingLambdaDetails,
+  reportNavigateToLambdaDetails,
+} from '../journeyconnector';
 
 const LambdaDetailsContainer = ({navigation, route}) => {
   const DATA_NOT_LOADED = 0;
@@ -20,8 +23,7 @@ const LambdaDetailsContainer = ({navigation, route}) => {
   const currentRegion = useSelector(state => state.settings.region);
 
   useEffect(() => {
-    reportEvent('navto_lambda_details');
-    reportStageTransition(2, 'explore');
+    reportNavigateToLambdaDetails();
   }, []);
 
   const loadData = async (region, lambdaName) => {
@@ -39,6 +41,7 @@ const LambdaDetailsContainer = ({navigation, route}) => {
     } catch (err) {
       setError(JSON.stringify(err, null, 1));
       setDataLoadingStatus(DATA_LOADING_FAILED);
+      reportErrorLoadingLambdaDetails();
     }
   };
 

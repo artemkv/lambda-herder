@@ -10,6 +10,7 @@ import {
 import {flowNeedAcceptance} from '../state/actions';
 import {useDispatch} from 'react-redux';
 import {clearAcceptance, clearConnection} from '../persistence';
+import {reportUnlinkAccount} from '../journeyconnector';
 
 const Settings = props => {
   const dispatch = useDispatch();
@@ -17,6 +18,7 @@ const Settings = props => {
   const unlinkAccount = async _ => {
     await clearAcceptance();
     await clearConnection();
+    reportUnlinkAccount();
     dispatch(flowNeedAcceptance());
   };
 

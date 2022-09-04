@@ -6,7 +6,7 @@ import Spinner from './Spinner';
 import {useSelector} from 'react-redux';
 import EmptyState from './EmptyState';
 import {getConnection} from '../persistence';
-import {jj} from '../util';
+import {reportErrorLoadingLambdaList} from '../journeyconnector';
 
 const LambdaListContainer = ({navigation}) => {
   const DATA_NOT_LOADED = 0;
@@ -46,6 +46,7 @@ const LambdaListContainer = ({navigation}) => {
     } catch (err) {
       setError(JSON.stringify(err, null, 1));
       setDataLoadingStatus(DATA_LOADING_FAILED);
+      reportErrorLoadingLambdaList();
     }
   };
 
