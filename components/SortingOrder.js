@@ -45,6 +45,7 @@ const styles = StyleSheet.create({
   inputContainer: {
     flexDirection: 'row',
     justifyContent: 'center',
+    marginTop: 8,
   },
   dropdownBtnStyle: {
     marginHorizontal: 8,

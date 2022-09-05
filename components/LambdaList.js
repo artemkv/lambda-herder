@@ -1,6 +1,7 @@
 import React from 'react';
 import {
   View,
+  SafeAreaView,
   StyleSheet,
   FlatList,
   RefreshControl,
@@ -9,10 +10,11 @@ import {
 import Lambda from './Lambda';
 import ErrorRatePieChart from './ErrorRatePieChart';
 import SortingOrder from './SortingOrder';
+import theme from './theme';
 
 const LambdaList = ({lambdas, navigation, refreshing, onRefresh}) => {
   return (
-    <View>
+    <SafeAreaView style={styles.container}>
       <StatusBar backgroundColor="#ff6f00" />
       <FlatList
         style={styles.container}
@@ -30,13 +32,13 @@ const LambdaList = ({lambdas, navigation, refreshing, onRefresh}) => {
           );
         }}
       />
-    </View>
+    </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    marginVertical: 4,
+    backgroundColor: theme.color.background,
   },
 });
 

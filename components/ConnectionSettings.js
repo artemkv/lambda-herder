@@ -8,6 +8,7 @@ import {
   StatusBar,
   Button,
 } from 'react-native';
+import theme from './theme';
 
 const ConnectionSettings = props => {
   const [accessKeyId, setAccessKeyId] = useState(props.accessKeyId);
@@ -26,7 +27,7 @@ const ConnectionSettings = props => {
   return (
     <SafeAreaView style={styles.safeArea}>
       <StatusBar backgroundColor="#ff6f00" />
-      <View style={styles.filterContainer}>
+      <View style={styles.container}>
         <View style={styles.labelContainer}>
           <Text style={styles.label}>Access Key ID</Text>
         </View>
@@ -35,6 +36,7 @@ const ConnectionSettings = props => {
             style={styles.input}
             editable
             placeholder="Your Access Key ID"
+            placeholderTextColor={theme.color.placeholder}
             value={accessKeyId}
             onChangeText={setAccessKeyId}
           />
@@ -47,6 +49,7 @@ const ConnectionSettings = props => {
             style={styles.input}
             editable
             placeholder="Your Secret Access Key"
+            placeholderTextColor={theme.color.placeholder}
             value={secretAccessKey}
             onChangeText={setSecretAccessKey}
           />
@@ -74,7 +77,9 @@ const ConnectionSettings = props => {
 };
 
 const styles = StyleSheet.create({
-  container: {},
+  container: {
+    backgroundColor: theme.color.background,
+  },
   labelContainer: {},
   label: {
     marginHorizontal: 8,
@@ -83,6 +88,7 @@ const styles = StyleSheet.create({
     paddingVertical: 4,
     fontSize: 22,
     fontWeight: '600',
+    color: theme.color.font,
   },
   inputContainer: {
     flexDirection: 'row',
@@ -92,10 +98,12 @@ const styles = StyleSheet.create({
     width: '80%',
     borderBottomColor: '#000000',
     borderBottomWidth: 1,
+    color: theme.color.font,
   },
   hint: {
     marginHorizontal: 32,
     marginVertical: 16,
+    color: theme.color.font,
   },
   buttonContainer: {
     margin: 16,

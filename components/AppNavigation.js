@@ -3,6 +3,7 @@ import {NavigationContainer} from '@react-navigation/native';
 import {createDrawerNavigator} from '@react-navigation/drawer';
 import SettingsScreen from './SettingsScreen';
 import MainScreen from './MainScreen';
+import theme from './theme';
 
 const AppNavigation = () => {
   const Drawer = createDrawerNavigator();
@@ -12,12 +13,9 @@ const AppNavigation = () => {
       <Drawer.Navigator
         initialRouteName="Home"
         screenOptions={{
-          headerStyle: {
-            backgroundColor: '#ffb300',
-          },
-          headerTintColor: '#fff',
-          headerTitleStyle: {
-            fontWeight: 'bold',
+          drawerStyle: {
+            backgroundColor: theme.color.background,
+            width: 240,
           },
         }}>
         <Drawer.Screen

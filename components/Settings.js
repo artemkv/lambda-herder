@@ -11,6 +11,7 @@ import {flowNeedAcceptance} from '../state/actions';
 import {useDispatch} from 'react-redux';
 import {clearAcceptance, clearConnection} from '../persistence';
 import {reportUnlinkAccount} from '../journeyconnector';
+import theme from './theme';
 
 const Settings = props => {
   const dispatch = useDispatch();
@@ -23,7 +24,7 @@ const Settings = props => {
   };
 
   return (
-    <SafeAreaView>
+    <SafeAreaView style={styles.container}>
       <StatusBar backgroundColor="#ff6f00" />
       <View style={styles.buttonContainer}>
         <Button
@@ -41,8 +42,13 @@ const Settings = props => {
 };
 
 const styles = StyleSheet.create({
+  container: {
+    backgroundColor: theme.color.background,
+    flex: 1,
+  },
   hint: {
     marginHorizontal: 32,
+    color: theme.color.font,
   },
   buttonContainer: {
     margin: 16,

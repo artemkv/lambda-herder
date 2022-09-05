@@ -5,6 +5,7 @@ import {useSelector, useDispatch} from 'react-redux';
 import {updateFilterRegionIndex} from '../state/actions';
 import {saveSelectedRegion} from '../persistence';
 import {reportChangeRegion, reportNavigateToFilter} from '../journeyconnector';
+import theme from './theme';
 
 const Filter = ({navigator, route}) => {
   const regionIndex = useSelector(state => state.filter.regionIndex);
@@ -55,6 +56,7 @@ const Filter = ({navigator, route}) => {
 const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
+    backgroundColor: theme.color.background,
   },
   filterContainer: {
     flex: 1,
@@ -70,6 +72,7 @@ const styles = StyleSheet.create({
     paddingVertical: 4,
     fontSize: 22,
     fontWeight: '600',
+    color: theme.color.font,
   },
   inputContainer: {
     flexDirection: 'row',

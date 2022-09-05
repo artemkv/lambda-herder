@@ -1,5 +1,12 @@
 import React from 'react';
-import {ScrollView, View, Text, StyleSheet, RefreshControl} from 'react-native';
+import {
+  ScrollView,
+  View,
+  Text,
+  StyleSheet,
+  SafeAreaView,
+  RefreshControl,
+} from 'react-native';
 import Trends from './Trends';
 import {
   VictoryLine,
@@ -7,6 +14,7 @@ import {
   VictoryGroup,
   VictoryTheme,
 } from 'victory-native';
+import theme from './theme';
 
 const LambdaDetails = ({data, log, refreshing, onRefresh}) => {
   const data1 = data.metrics.inv.map((v, idx) => ({idx, v}));
@@ -16,69 +24,81 @@ const LambdaDetails = ({data, log, refreshing, onRefresh}) => {
   const data5 = data.metrics.cnc.map((v, idx) => ({idx, v}));
 
   return (
-    <ScrollView
-      style={styles.container}
-      refreshControl={
-        <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-      }>
-      <Text style={styles.lambdaHeader}>{data.name}</Text>
-      <Trends data={data} />
-      <View style={styles.divider} />
-      <Text style={styles.chartsHeader}>Last 24 hours</Text>
-      <Text style={styles.chartTitle}>Invocations</Text>
-      <Text
-        style={styles.chartSubTitle}>{`Total: ${data.aggregates.inv}`}</Text>
-      <VictoryChart height={200} width={350} theme={VictoryTheme.material}>
-        <VictoryGroup color="#2d89ef">
-          <VictoryLine data={data1} x="idx" y="v" />
-        </VictoryGroup>
-      </VictoryChart>
-      <Text style={styles.chartTitle}>Duration</Text>
-      <Text style={styles.chartSubTitle}>{`Avg: ${data.aggregates.dur.toFixed(
-        2,
-      )} ms`}</Text>
-      <VictoryChart height={200} width={350} theme={VictoryTheme.material}>
-        <VictoryGroup color="#2d89ef">
-          <VictoryLine data={data2} x="idx" y="v" />
-        </VictoryGroup>
-      </VictoryChart>
-      <Text style={styles.chartTitle}>Errors</Text>
-      <Text
-        style={styles.chartSubTitle}>{`Total: ${data.aggregates.err}`}</Text>
-      <VictoryChart height={200} width={350} theme={VictoryTheme.material}>
-        <VictoryGroup color="#2d89ef">
-          <VictoryLine data={data3} x="idx" y="v" />
-        </VictoryGroup>
-      </VictoryChart>
-      <Text style={styles.chartTitle}>Throttles</Text>
-      <Text
-        style={styles.chartSubTitle}>{`Total: ${data.aggregates.thr}`}</Text>
-      <VictoryChart height={200} width={350} theme={VictoryTheme.material}>
-        <VictoryGroup color="#2d89ef">
-          <VictoryLine data={data4} x="idx" y="v" />
-        </VictoryGroup>
-      </VictoryChart>
-      <Text style={styles.chartTitle}>Concurrent executions</Text>
-      <Text style={styles.chartSubTitle}>{`Avg: ${data.aggregates.cnc.toFixed(
-        2,
-      )}`}</Text>
-      <VictoryChart height={200} width={350} theme={VictoryTheme.material}>
-        <VictoryGroup color="#2d89ef">
-          <VictoryLine data={data5} x="idx" y="v" />
-        </VictoryGroup>
-      </VictoryChart>
-      <View style={styles.divider} />
-      <View style={styles.logContainer}>
-        {log.map((x, idx) => {
-          const style = getLogLineStyle(x);
-          return (
-            <Text key={idx} style={style}>
-              {x}
-            </Text>
-          );
-        })}
-      </View>
-    </ScrollView>
+    <SafeAreaView style={styles.container}>
+      <ScrollView
+        style={styles.scrollView}
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+        }>
+        <Text style={styles.lambdaHeader}>{data.name}</Text>
+        <Trends data={data} />
+        <View style={styles.divider} />
+        <Text style={styles.chartsHeader}>Last 24 hours</Text>
+        <Text style={styles.chartTitle}>Invocations</Text>
+        <Text
+          style={styles.chartSubTitle}>{`Total: ${data.aggregates.inv}`}</Text>
+        <View style={styles.chartContainer}>
+          <VictoryChart height={250} theme={VictoryTheme.material}>
+            <VictoryGroup color={theme.color.chartline}>
+              <VictoryLine data={data1} x="idx" y="v" />
+            </VictoryGroup>
+          </VictoryChart>
+        </View>
+        <Text style={styles.chartTitle}>Duration</Text>
+        <Text style={styles.chartSubTitle}>{`Avg: ${data.aggregates.dur.toFixed(
+          2,
+        )} ms`}</Text>
+        <View style={styles.chartContainer}>
+          <VictoryChart height={250} theme={VictoryTheme.material}>
+            <VictoryGroup color={theme.color.chartline}>
+              <VictoryLine data={data2} x="idx" y="v" />
+            </VictoryGroup>
+          </VictoryChart>
+        </View>
+        <Text style={styles.chartTitle}>Errors</Text>
+        <Text
+          style={styles.chartSubTitle}>{`Total: ${data.aggregates.err}`}</Text>
+        <View style={styles.chartContainer}>
+          <VictoryChart height={250} theme={VictoryTheme.material}>
+            <VictoryGroup color={theme.color.chartline}>
+              <VictoryLine data={data3} x="idx" y="v" />
+            </VictoryGroup>
+          </VictoryChart>
+        </View>
+        <Text style={styles.chartTitle}>Throttles</Text>
+        <Text
+          style={styles.chartSubTitle}>{`Total: ${data.aggregates.thr}`}</Text>
+        <View style={styles.chartContainer}>
+          <VictoryChart height={250} theme={VictoryTheme.material}>
+            <VictoryGroup color={theme.color.chartline}>
+              <VictoryLine data={data4} x="idx" y="v" />
+            </VictoryGroup>
+          </VictoryChart>
+        </View>
+        <Text style={styles.chartTitle}>Concurrent executions</Text>
+        <Text style={styles.chartSubTitle}>{`Avg: ${data.aggregates.cnc.toFixed(
+          2,
+        )}`}</Text>
+        <View style={styles.chartContainer}>
+          <VictoryChart height={250} theme={VictoryTheme.material}>
+            <VictoryGroup color={theme.color.chartline}>
+              <VictoryLine data={data5} x="idx" y="v" />
+            </VictoryGroup>
+          </VictoryChart>
+        </View>
+        <View style={styles.divider} />
+        <View style={styles.logContainer}>
+          {log.map((x, idx) => {
+            const style = getLogLineStyle(x);
+            return (
+              <Text key={idx} style={style}>
+                {x}
+              </Text>
+            );
+          })}
+        </View>
+      </ScrollView>
+    </SafeAreaView>
   );
 };
 
@@ -91,14 +111,19 @@ const getLogLineStyle = s => {
 
 const styles = StyleSheet.create({
   container: {
-    marginHorizontal: 8,
-    marginTop: 4,
-    paddingHorizontal: 8,
-    paddingTop: 8,
+    backgroundColor: theme.color.background,
+  },
+  scrollView: {
+    paddingHorizontal: 16,
+    paddingTop: 12,
+  },
+  chartContainer: {
+    alignItems: 'center',
   },
   lambdaHeader: {
     fontSize: 22,
     fontWeight: '600',
+    color: theme.color.font,
   },
   logContainer: {
     marginTop: 16,
@@ -108,26 +133,31 @@ const styles = StyleSheet.create({
     fontSize: 16,
     textAlign: 'center',
     fontWeight: '600',
+    color: theme.color.font,
   },
   chartTitle: {
     marginTop: 8,
     fontSize: 22,
     fontWeight: '600',
     textAlign: 'center',
+    color: theme.color.font,
   },
   chartSubTitle: {
     marginTop: 8,
     fontSize: 16,
     textAlign: 'center',
+    color: theme.color.font,
   },
   divider: {
     marginTop: 16,
     borderBottomColor: 'silver',
     borderBottomWidth: StyleSheet.hairlineWidth,
   },
-  logLineNeutral: {},
+  logLineNeutral: {
+    color: theme.color.font,
+  },
   logLineError: {
-    color: '#e92967',
+    color: theme.color.red,
   },
 });
 

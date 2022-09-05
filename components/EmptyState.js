@@ -1,13 +1,14 @@
 import React from 'react';
-import {StyleSheet, View, Text, StatusBar} from 'react-native';
+import {StyleSheet, SafeAreaView, Text, StatusBar} from 'react-native';
+import theme from './theme';
 
 const EmptyState = props => {
   // TODO: pull to refresh
   return (
-    <View style={styles.emptyStateContainer}>
+    <SafeAreaView style={styles.emptyStateContainer}>
       <StatusBar backgroundColor="#ff6f00" />
-      <Text>Nothing found</Text>
-    </View>
+      <Text style={styles.text}>Nothing found</Text>
+    </SafeAreaView>
   );
 };
 
@@ -16,6 +17,10 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
+    backgroundColor: theme.color.background,
+  },
+  text: {
+    color: theme.color.font,
   },
 });
 

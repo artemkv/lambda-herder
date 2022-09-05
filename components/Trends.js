@@ -1,6 +1,7 @@
 import React from 'react';
 import {Text, View, StyleSheet} from 'react-native';
 import {getTrend} from '../business';
+import theme from './theme';
 
 const Trends = ({data}) => {
   return (
@@ -58,18 +59,19 @@ const styles = StyleSheet.create({
   trend: {
     marginRight: 4,
     fontSize: 14,
+    color: theme.color.font,
   },
   metric: {
     fontWeight: '600',
   },
   good: {
-    color: '#12a66d',
+    color: theme.color.green,
   },
   bad: {
-    color: '#e92967',
+    color: theme.color.red,
   },
   neutral: {
-    color: 'silver',
+    color: theme.color.neutral,
   },
 });
 

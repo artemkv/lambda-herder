@@ -1,6 +1,7 @@
 import React from 'react';
 import {StyleSheet, View, Text} from 'react-native';
 import {VictoryPie} from 'victory-native';
+import theme from './theme';
 
 const ErrorRatePieChart = props => {
   const calculated = props.data
@@ -33,7 +34,7 @@ const ErrorRatePieChart = props => {
     <View>
       <Text style={styles.rate}>{rate}</Text>
       <VictoryPie
-        colorScale={['#e92967', '#12a66d']}
+        colorScale={[theme.color.red, theme.color.green]}
         data={data}
         height={220}
         innerRadius={45}
@@ -51,6 +52,7 @@ const styles = StyleSheet.create({
     margin: 16,
     fontSize: 16,
     textAlign: 'center',
+    color: theme.color.font,
   },
 });
 

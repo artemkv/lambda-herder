@@ -1,6 +1,7 @@
 import React from 'react';
 import {Text, View, StyleSheet, TouchableOpacity} from 'react-native';
 import Trends from './Trends';
+import theme from './theme';
 
 const Lambda = props => {
   const data = props.data;
@@ -26,14 +27,16 @@ const styles = StyleSheet.create({
     marginTop: 4,
     paddingHorizontal: 8,
     paddingTop: 8,
+    backgroundColor: theme.color.listitem,
   },
   lambdaHeader: {
     fontSize: 22,
     fontWeight: '600',
+    color: theme.color.font,
   },
   divider: {
     marginTop: 16,
-    borderBottomColor: 'silver',
+    borderBottomColor: theme.color.listitem,
     borderBottomWidth: StyleSheet.hairlineWidth,
   },
 });

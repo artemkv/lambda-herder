@@ -8,6 +8,7 @@ import {
   View,
 } from 'react-native';
 import CheckBox from '@react-native-community/checkbox';
+import theme from './theme';
 
 const PrivacyPoLicy = props => {
   const [isAccepted, setAccepted] = useState(props.isAccepted);
@@ -118,6 +119,7 @@ const PrivacyPoLicy = props => {
           value={isAccepted}
           onValueChange={setAccepted}
           style={styles.checkbox}
+          tintColors={{true: theme.color.font, false: theme.color.font}}
         />
         <Text style={styles.label}>
           I have read and accepted the Privacy Policy.
@@ -140,17 +142,21 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 16,
+    backgroundColor: theme.color.background,
   },
   h1: {
     fontSize: 32,
     fontWeight: 'bold',
+    color: theme.color.font,
   },
   h2: {
     fontSize: 24,
     fontWeight: 'bold',
+    color: theme.color.font,
   },
   text: {
     fontSize: 22,
+    color: theme.color.font,
   },
   checkboxContainer: {
     flexDirection: 'row',
@@ -158,11 +164,14 @@ const styles = StyleSheet.create({
     alignContent: 'center',
     fontSize: 16,
     marginVertical: 16,
+    color: theme.color.font,
   },
+  checkbox: {},
   label: {
     alignSelf: 'center',
     textAlign: 'center',
     fontSize: 16,
+    color: theme.color.font,
   },
   acceptButtonContainer: {
     marginVertical: 16,
