@@ -12,6 +12,7 @@
   "dependencies": {
     "@aws-sdk/client-cloudwatch": "^3.142.0",
     "@aws-sdk/client-cloudwatch-logs": "^3.142.0",
+    "@aws-sdk/client-cost-explorer": "^3.165.0",
     "@aws-sdk/client-lambda": "^3.142.0",
     "@react-native-async-storage/async-storage": "^1.17.8",
     "@react-native-community/checkbox": "^0.5.12",
@@ -19,6 +20,7 @@
     "@react-navigation/native": "^6.0.11",
     "@react-navigation/native-stack": "^6.7.0",
     "datashaper-js": "^1.0.7",
+    "dayjs": "^1.11.5",
     "journey3-react-native-sdk": "^1.0.0",
     "ramda": "^0.28.0",
     "react": "18.0.0",

@@ -2,6 +2,7 @@ import React from 'react';
 import {NavigationContainer} from '@react-navigation/native';
 import {createDrawerNavigator} from '@react-navigation/drawer';
 import SettingsScreen from './SettingsScreen';
+import BillingScreen from './BillingScreen';
 import MainScreen from './MainScreen';
 import theme from './theme';
 
@@ -21,6 +22,11 @@ const AppNavigation = () => {
         <Drawer.Screen
           name="Lambdas"
           component={MainScreen}
+          options={{headerShown: false}}
+        />
+        <Drawer.Screen
+          name="Billing"
+          component={BillingScreen}
           options={{headerShown: false}}
         />
         <Drawer.Screen

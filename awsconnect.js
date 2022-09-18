@@ -2,6 +2,10 @@ import 'react-native-url-polyfill/auto';
 
 import {LambdaClient, ListFunctionsCommand} from '@aws-sdk/client-lambda';
 import {
+  CostExplorerClient,
+  GetCostAndUsageCommand,
+} from '@aws-sdk/client-cost-explorer';
+import {
   CloudWatchLogsClient,
   GetLogEventsCommand,
   DescribeLogStreamsCommand,
@@ -21,6 +25,11 @@ import {
   ORDER_BY_THROTTLING,
   ORDER_BY_CNCS,
 } from './awslambdaordering';
+import {
+  getLastNMonthsPeriod,
+  getLastNMonthsLabels,
+  getYearMonthLabel,
+} from './dateutil';
 
 const byDate = (a, b) => new Date(a).getTime() - new Date(b).getTime();
 const byDateDescending = (a, b) =>
@@ -326,4 +335,124 @@ const prepareMetricQueries = (id, metricName) => {
       },
     },
   ];
+};
+
+// https://docs.aws.amazon.com/AWSJavaScriptSDK/v3/latest/clients/client-cost-explorer/interfaces/getcostandusagecommandinput.html
+// https://aws.amazon.com/blogs/aws-cloud-financial-management/understanding-your-aws-cost-datasets-a-cheat-sheet/
+
+// https://docs.aws.amazon.com/AWSJavaScriptSDK/v3/latest/clients/client-cost-explorer/classes/getcostforecastcommand.html
+// https://docs.aws.amazon.com/AWSJavaScriptSDK/v3/latest/clients/client-cost-explorer/classes/getusageforecastcommand.html
+
+const attributeToLabels = (labels, costsByPeriod) =>
+  from(labels)
+    .map(period => ({
+      x: period,
+      y: period in costsByPeriod ? costsByPeriod[period] : 0,
+    }))
+    .return();
+
+export const getBillingInfo = async (region, accessKeyId, secretAccessKey) => {
+  const client = new CostExplorerClient({
+    region,
+    credentials: {
+      accessKeyId,
+      secretAccessKey,
+    },
+  });
+
+  const now = new Date();
+  const [start, end] = getLastNMonthsPeriod(now, 6);
+
+  const command = new GetCostAndUsageCommand({
+    Granularity: 'MONTHLY',
+    TimePeriod: {
+      Start: start,
+      End: end,
+    },
+    Metrics: ['UnblendedCost'],
+    GroupBy: [
+      {
+        Key: 'SERVICE',
+        Type: 'DIMENSION',
+      },
+    ],
+  });
+  const data = await client.send(command);
+
+  // TODO: can currency ever be mixed?
+  const unit = data.ResultsByTime[0].Groups[0].Metrics.UnblendedCost.Unit;
+
+  const total = sum(
+    from(data.ResultsByTime)
+      .flatMap(r => r.Groups)
+      .map(x => +x.Metrics.UnblendedCost.Amount)
+      .return(),
+  );
+
+  const costByPeriod = attributeToLabels(
+    getLastNMonthsLabels(now, 6),
+    from(data.ResultsByTime)
+      .map(x => ({
+        dt: getYearMonthLabel(new Date(x.TimePeriod.Start)),
+        cost: sum(x.Groups.map(g => +g.Metrics.UnblendedCost.Amount)),
+      }))
+      .toMap(
+        a => a.dt,
+        a => a.cost,
+      )
+      .return(),
+  );
+
+  const costByService = from(data.ResultsByTime)
+    .flatMap(r => r.Groups)
+    .toLookup(
+      x => x.Keys[0],
+      y => +y.Metrics.UnblendedCost.Amount,
+    )
+    .map(x => sum(x))
+    .toList()
+    .sorted((a, b) => b.v - a.v)
+    .map(a => ({
+      x: a.k,
+      y: a.v,
+    }))
+    .take(4)
+    .return();
+
+  const totalTop4 = sum(costByService.map(a => a.y));
+  costByService.push({
+    x: 'Other',
+    y: total - totalTop4,
+  });
+
+  const costByPeriodByService = from(data.ResultsByTime)
+    .flatMap(x =>
+      x.Groups.map(g => ({
+        dt: getYearMonthLabel(new Date(x.TimePeriod.Start)),
+        svc: g.Keys[0],
+        cost: +g.Metrics.UnblendedCost.Amount,
+      })),
+    )
+    .toLookup(
+      r => r.svc,
+      r => ({dt: r.dt, cost: r.cost}),
+    )
+    .map(x =>
+      from(x)
+        .toMap(
+          a => a.dt,
+          a => a.cost,
+        )
+        .return(),
+    )
+    .map(x => attributeToLabels(getLastNMonthsLabels(now, 6), x))
+    .return();
+
+  return {
+    total,
+    unit,
+    costByPeriod,
+    costByService,
+    costByPeriodByService,
+  };
 };

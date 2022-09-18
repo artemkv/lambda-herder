@@ -111,6 +111,7 @@ const getLogLineStyle = s => {
 
 const styles = StyleSheet.create({
   container: {
+    flex: 1,
     backgroundColor: theme.color.background,
   },
   scrollView: {
