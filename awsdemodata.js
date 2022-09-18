@@ -8,6 +8,7 @@ import {
   ORDER_BY_THROTTLING,
   ORDER_BY_CNCS,
 } from './awslambdaordering';
+import {getLastNMonthsLabels} from './dateutil';
 
 const sum = aa => aa.reduce((acc, cur) => acc + cur, 0);
 const avg = aa => (aa.length > 0 ? sum(aa) / aa.length : 0);
@@ -148,4 +149,60 @@ const getRandomLogs = n => {
   return Array.from({length: n}, () => Math.floor(Math.random() * 10))
     .map(x => (x <= 2 ? getErrorLogs() : getSuccessLogs()))
     .flatMap(x => x);
+};
+
+export const getBillingInfoDemo = _ => {
+  const now = new Date();
+
+  const unit = 'USD';
+
+  const costByPeriod = from(getLastNMonthsLabels(now, 6))
+    .map(dt => ({
+      x: dt,
+      y: Math.floor(Math.random() * 20) + 70,
+    }))
+    .return();
+
+  const total = sum(costByPeriod.map(x => x.y));
+
+  const costByService = from([
+    'AWS Lambda',
+    'Amazon Route 53',
+    'Amazon DynamoDB',
+    'Amazon CloudFront',
+  ])
+    .map(svc => ({
+      x: svc,
+      y: Math.floor(Math.random() * 100),
+    }))
+    .return();
+
+  const costByPeriodByService = from([
+    'AWS Lambda',
+    'Amazon Route 53',
+    'Amazon DynamoDB',
+    'Amazon CloudFront',
+  ])
+    .map(svc => ({
+      svc,
+      data: from(getLastNMonthsLabels(now, 6))
+        .map(dt => ({
+          x: dt,
+          y: Math.floor(Math.random() * 50),
+        }))
+        .return(),
+    }))
+    .toMap(
+      x => x.svc,
+      y => y.data,
+    )
+    .return();
+
+  return {
+    total,
+    unit,
+    costByPeriod,
+    costByService,
+    costByPeriodByService,
+  };
 };

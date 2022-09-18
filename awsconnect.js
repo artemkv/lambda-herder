@@ -15,7 +15,12 @@ import {
   GetMetricDataCommand,
 } from '@aws-sdk/client-cloudwatch';
 import {from, pair} from 'datashaper-js';
-import {listLambdasDemo, getMetricDataDemo, getLogsDemo} from './awsdemodata';
+import {
+  listLambdasDemo,
+  getMetricDataDemo,
+  getLogsDemo,
+  getBillingInfoDemo,
+} from './awsdemodata';
 import {
   ORDER_BY_NAME,
   ORDER_BY_DATE,
@@ -352,6 +357,10 @@ const attributeToLabels = (labels, costsByPeriod) =>
     .return();
 
 export const getBillingInfo = async (region, accessKeyId, secretAccessKey) => {
+  if (isDemo(accessKeyId, secretAccessKey)) {
+    return getBillingInfoDemo();
+  }
+
   const client = new CostExplorerClient({
     region,
     credentials: {

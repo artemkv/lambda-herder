@@ -111,12 +111,16 @@ const Billing = ({billingData, refreshing, onRefresh}) => {
           </VictoryChart>
         </View>
 
-        <ServiceCost
-          serviceName="AWS Lambda"
-          total={sum(costByPeriodByService['AWS Lambda'].map(x => x.y))}
-          unit="USD"
-          costByPeriod={costByPeriodByService['AWS Lambda']}
-        />
+        {'AWS Lambda' in costByPeriodByService ? (
+          <ServiceCost
+            serviceName="AWS Lambda"
+            total={sum(costByPeriodByService['AWS Lambda'].map(x => x.y))}
+            unit="USD"
+            costByPeriod={costByPeriodByService['AWS Lambda']}
+          />
+        ) : (
+          ''
+        )}
 
         {from(costByPeriodByService)
           .listKeys()
