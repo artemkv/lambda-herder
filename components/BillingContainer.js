@@ -51,6 +51,25 @@ const BillingContainer = ({navigation, route}) => {
     });
   }, [currentRegion]);
 
+  const errorAdvise = `Make sure the account is correct and is allowed to perform GetCostAndUsage API Call.
+
+You can use the following policy as an example:
+
+  {
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Effect": "Allow",
+            "Action": [
+                "ce:GetCostAndUsage"
+            ],
+            "Resource": "*"
+        }
+    ]
+}
+
+If you want to switch to a different account, use "Settings -> Unlink account" option.`;
+
   switch (dataLoadingStatus) {
     case DATA_NOT_LOADED:
       return <Spinner />;
@@ -63,7 +82,7 @@ const BillingContainer = ({navigation, route}) => {
         />
       );
     case DATA_LOADING_FAILED:
-      return <Error error={error} />;
+      return <Error error={error} advise={errorAdvise} />;
   }
 };
 

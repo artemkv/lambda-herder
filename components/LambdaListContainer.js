@@ -61,6 +61,10 @@ const LambdaListContainer = ({navigation}) => {
     });
   }, [currentRegion, order]);
 
+  const errorAdvise = `Make sure the account is correct and has AWSLambda_ReadOnlyAccess permissions.
+
+If you want to switch to a different account, use "Settings -> Unlink account" option.`;
+
   switch (dataLoadingStatus) {
     case DATA_NOT_LOADED:
       return <Spinner />;
@@ -77,7 +81,7 @@ const LambdaListContainer = ({navigation}) => {
         />
       );
     case DATA_LOADING_FAILED:
-      return <Error error={error} />;
+      return <Error error={error} advise={errorAdvise} />;
   }
 };
 

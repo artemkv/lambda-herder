@@ -14,14 +14,10 @@ const ConnectionSettings = props => {
   const [accessKeyId, setAccessKeyId] = useState(props.accessKeyId);
   const [secretAccessKey, setSecretAccessKey] = useState(props.secretAccessKey);
 
-  const [buttonText, setButtonText] = useState('Continue to the app');
+  const [accessKeyProvided, setAccessKeyProvided] = useState(false);
 
   useEffect(() => {
-    setButtonText(
-      accessKeyId && secretAccessKey
-        ? 'Continue to the app'
-        : 'Continue with demo data',
-    );
+    setAccessKeyProvided(accessKeyId && secretAccessKey ? true : false);
   }, [accessKeyId, secretAccessKey]);
 
   return (
@@ -55,21 +51,33 @@ const ConnectionSettings = props => {
           />
         </View>
         <Text style={styles.hint}>
-          We recommend using a dedicated account with AWSLambda_ReadOnlyAccess
+          We recommend using a dedicated account with "AWSLambda_ReadOnlyAccess"
           permissions.
         </Text>
         <Text style={styles.hint}>
-          If you leave one of these fields empty, if will see the randomly
-          generated demo data.
+          You also need to allow "GetCostAndUsage" API ("ce:GetCostAndUsage") if
+          you want to have an access to the billing info.
         </Text>
       </View>
       <View style={styles.buttonContainer}>
         <Button
-          title={buttonText}
+          title="Continue to the app"
           style={styles.button}
           onPress={() =>
             props.onConnectionConfigured(accessKeyId, secretAccessKey)
           }
+          disabled={!accessKeyProvided}
+        />
+      </View>
+      <Text style={styles.hint}>
+        If you don't want to connect the app now, you may choose to proceed with
+        the randomly generated demo data.
+      </Text>
+      <View style={styles.buttonContainer}>
+        <Button
+          title="Continue with demo data"
+          style={styles.button}
+          onPress={() => props.onConnectionConfigured('', '')}
         />
       </View>
     </SafeAreaView>

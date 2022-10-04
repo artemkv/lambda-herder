@@ -9,6 +9,7 @@ const Error = props => {
       <StatusBar backgroundColor="#ff6f00" />
       <Text style={styles.errorHeader}>ERROR</Text>
       <Text style={styles.errorTextContainer}>{props.error}</Text>
+      <Text style={styles.errorTextContainer}>{props.advise}</Text>
     </SafeAreaView>
   );
 };
