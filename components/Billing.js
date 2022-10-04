@@ -125,10 +125,16 @@ const Billing = ({billingData, refreshing, onRefresh}) => {
         {from(costByPeriodByService)
           .listKeys()
           .filter(k => k !== 'AWS Lambda')
-          .map(k => (
+          .map(k => ({
+            k: k,
+            t: sum(costByPeriodByService[k].map(x => x.y)),
+          }))
+          .sorted((a, b) => b.t - a.t)
+          .filter(x => x.t > 0)
+          .map(({k, t}) => (
             <ServiceCost
               serviceName={k}
-              total={sum(costByPeriodByService[k].map(x => x.y))}
+              total={t}
               unit="USD"
               costByPeriod={costByPeriodByService[k]}
             />
